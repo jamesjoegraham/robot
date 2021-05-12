@@ -6,15 +6,19 @@ This is Team 8's arduino code, featuring a custom avr-gcc Makefile and external 
 
 Note: You should already have the avr-gcc toolchain as it is preinstalled on the VM. Avrdude is also already on the Pi.
 
- - Download ROS C++ library from Pi:
+ - Download C++ libraries from Pi:
 	```
 	mkdir -p ~/sketchbook/
 	scp -r ubuntu@10.0.39.39:~/sketchbook/libraries/ ~/sketchbook/
 	```
 	
  - Setup SSH Keys (optional)
-	
-	SSH Keys are optional but they will prevent you from needing to enter the Pi's password a lot.
+	```
+	ssh-keygen
+	ssh-copy-id ubuntu@10.0.39.39
+	```
+
+	SSH Keys are not required but they will prevent you from needing to enter the Pi's password a lot.
 	
 ## Build Procedure
 

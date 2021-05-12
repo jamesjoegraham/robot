@@ -39,7 +39,7 @@ void NodeConnect::init()
 
 void NodeConnect::update()
 {
-	// Covnert RPM to TICK
+	// Covnert Measured RPM values back to TICK
 	constexpr float tick_to_rpm = 1.9073486328125;
 	// Update left values.
 	m_leftPair.setpoint = leftSetPoint;

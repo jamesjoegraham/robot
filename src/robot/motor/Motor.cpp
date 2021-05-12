@@ -30,7 +30,7 @@ ISR(PCINT0_vect)
 }
 
 // Left Motor ISR
-volatile unsigned char past_PIND = 0x00;
+volatile unsigned int past_PIND = 0x00;
 ISR(PCINT2_vect)
 {
 	if ((PIND & (1 << PD5)) && !(past_PIND & (1 << PD5))) // trigger on rising-edge only
