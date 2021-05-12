@@ -42,7 +42,7 @@ namespace robot { namespace controller
 			);
 
 		// Execute the calculations.
-		void Compute();
+		bool Compute();
 
 		// Output getter. This returns by const reference to make it read only.
 		float getOutput() const
@@ -67,11 +67,14 @@ namespace robot { namespace controller
 		// The maximum allowed value. PIDController::Compute() clamps the output down to this value as a maximum.
 		const float m_max;
 
-		// Our dt, or also known as change in time. This number represents how long each tick of the controller is.
-		const float m_dt;
+		// This number represents how long each tick of the controller is.
+		const float m_samplePeriod;
 
 		// Our derivative low-pass filter time constant.
 		const float m_tau;
+
+		// Our dt, or also known as change in time. This keeps track of how long its been since the last calculation.
+		unsigned long m_prevTime;
 
 		// The previous error from the last computation.
 		float m_prevError;
@@ -87,7 +90,7 @@ namespace robot { namespace controller
 
 		// This object stores the set point (first) and measured value (second). The reference allows for
 		// zero-copying use throughout the program.
-		SpeedPair& m_speedPair;
+		const SpeedPair& m_speedPair;
 
 		// PIDController's output.
 		float m_output;

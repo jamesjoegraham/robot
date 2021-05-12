@@ -19,7 +19,7 @@ robot::controller::PIDController leftPID{
 	-255,			// Min PWM Value
 	255,			// Max PWM Value
 	100,			// Sample Period (ms)
-	0,			// Tau Time Constant ()
+	0.02,			// Tau Time Constant ()
 	leftPair		// Current set point and measured value
 };
 // Right PIDController object.
@@ -30,7 +30,7 @@ robot::controller::PIDController rightPID{
 	-255,			// Min PWM Value
 	255,			// Max PWM Value
 	100,			// Sample Period (ms)
-	0,			// Tau Time Constant ()
+	0.02,			// Tau Time Constant ()
 	rightPair		// Current set point and measured value
 };
 
@@ -55,11 +55,11 @@ void loop()
 	leftPair.measurement = leftMotor.retrieveMeasurement();
 	rightPair.measurement = rightMotor.retrieveMeasurement();
 	// Compute PID Values.
-	leftPID.Compute();
-	rightPID.Compute();
+	const bool leftComputed = leftPID.Compute();
+	const bool rightComputed = rightPID.Compute();
 	// Set Motor PWMs. We have to cast the PID float output to an integer.
-	leftMotor.setPWM(static_cast<int>(leftPID.getOutput()));
-	rightMotor.setPWM(static_cast<int>(rightPID.getOutput()));
+	if (leftComputed) { leftMotor.setPWM(static_cast<int>(leftPID.getOutput())); }
+	if (rightComputed) { rightMotor.setPWM(static_cast<int>(rightPID.getOutput())); }
 	// Update Node. This includes publishing.
 	nodeHandle.update();
 	// Wait 1ms.

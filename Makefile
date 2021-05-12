@@ -1,7 +1,7 @@
 # James Graham 2021
 # Automatic AVR Makefile
 
-
+################################################################
 # Configuration #
 
 # The name of the executable (.hex)
@@ -33,11 +33,8 @@ ROSLIB_DIR = /home/eced3901/sketchbook/libraries/ros_lib/
 # Arduino Library Information
 ARDUINO_DIR = /usr/share/arduino/
 
-
-
-
+##################################################################
 # Targets #
-
 
 # Include Arduino Source Files
 ARDLIB_DIR := $(ARDUINO_DIR)hardware/arduino/cores/arduino

@@ -6,11 +6,11 @@
 
 using namespace robot::motor;
 
-// ISR Global Variables
-static int right_temp_ticks;
-static int left_temp_ticks;
-static int32_t right_ticks = 0;
-static int32_t left_ticks = 0;
+// ISR Global Variables. We keep them confined in this motor implementation.
+volatile int right_temp_ticks;
+volatile int left_temp_ticks;
+volatile int32_t right_ticks = 0;
+volatile int32_t left_ticks = 0;
 
 //:: Interupt Service Routines (ISRs)
 //
@@ -18,7 +18,7 @@ static int32_t left_ticks = 0;
 //
 
 // Right Motor ISR
-static unsigned char past_PINB = 0x00;
+volatile unsigned int past_PINB = 0x00;
 ISR(PCINT0_vect)
 {
 	if ((PINB & (1 << PB0)) && !(past_PINB & (1 << PB0))) // trigger on rising-edge only
@@ -30,7 +30,7 @@ ISR(PCINT0_vect)
 }
 
 // Left Motor ISR
-static unsigned char past_PIND = 0x00;
+volatile unsigned char past_PIND = 0x00;
 ISR(PCINT2_vect)
 {
 	if ((PIND & (1 << PD5)) && !(past_PIND & (1 << PD5))) // trigger on rising-edge only
@@ -42,8 +42,8 @@ ISR(PCINT2_vect)
 }
 
 // Static ISR Result Floats.
-static float omega_left_measured;
-static float omega_right_measured;
+volatile float omega_left_measured;
+volatile float omega_right_measured;
 
 // Measurement ISR
 ISR(TIMER1_OVF_vect)
@@ -102,7 +102,11 @@ void Motor::init()
 float Motor::retrieveMeasurement() const
 {
 	// Return the static ISR result float.
-	return m_motorType == MotorType::left ? omega_left_measured : omega_right_measured;
+	if (m_motorType == MotorType::left)
+	{
+		return omega_left_measured;
+	}
+	return omega_right_measured;
 }
 
 // Set the PWM of the motor.
@@ -111,7 +115,7 @@ void Motor::setPWM(int pwm)
 	// Boolean that tells us if the motor is going forwards or not.
 	const bool forwards{pwm > 0};
 	// Find its absolute value.
-	pwm = (pwm > 0) ? (pwm) : (-1 * pwm);
+	pwm = (pwm < 0) ? (-1 * pwm) : (pwm);
 	// Clamp down the pwm to a max of 255.
 	if (pwm > 255) { pwm = 255; }
 
@@ -135,18 +139,17 @@ void Motor::prv_setLeftMotor(const uint8_t pwmValue, const bool forwards) const
 	// If we're moving forwards.
 	if (forwards)
 	{
-		// Set PORTD4 on.
-		PORTD |= (1 << PD4);
+		// Set PORTD4 off.
+		PORTD &= ~(1 << PD4);	
 	}
 	// If we're moving in reverse.
 	else
 	{
-		// Set PORTD4 off.
-		PORTD &= ~(1 << PD4);
+		// Set PORTD4 on.
+		PORTD |= (1 << PD4);
 	}
 
 	// Set the motor PWM signal. If 0, turn off the motor.
-	// If pwm is 0, we fully stop the motor.
 	if (pwmValue == 0)
 	{
 		// Clear bits to disconnect OCR2B. 
@@ -186,7 +189,6 @@ void Motor::prv_setRightMotor(const uint8_t pwmValue, const bool forwards) const
 	}
 
 	// Set the motor PWM signal. If 0, turn off the motor.
-	// If pwm is 0, we fully stop the motor.
 	if (pwmValue == 0)
 	{
 		// Clear bits to disconnect OCR2A.

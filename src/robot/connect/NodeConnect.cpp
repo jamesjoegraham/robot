@@ -9,7 +9,6 @@ using namespace robot::connect;
 // Calculation Constants
 constexpr float wheel_radius = 0.0325; // (m).
 constexpr float wheel_axis = 0.200; // (m).
-constexpr float tick_to_rpm = 1.9073486328125;
 constexpr float pi = 3.14159265359;
 
 float leftSetPoint;
