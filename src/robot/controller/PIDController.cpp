@@ -7,15 +7,19 @@ using namespace robot::controller;
 namespace
 {
 	// Helper function that clamps down value to a min and max.
-	void clamp(float& value, const float& low, const float& high)
+	void clamp(float& value, const float& min, const float& max)
 	{
-		if (value < low)
+		// Is value less than min?
+		if (value < min)
 		{
-			value = low;
+			// Set it to min.
+			value = min;
 		}
-		else if (value > high)
+		// Is value greater than max?
+		else if (value > max)
 		{
-			value = high;
+			// Set it to max.
+			value = max;
 		}
 	}
 }

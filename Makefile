@@ -29,6 +29,8 @@ AVRSZ = $(AVR_DIR)/avr-size
 
 # ROSLIB Library Location
 ROSLIB_DIR = /home/eced3901/sketchbook/libraries/ros_lib/
+# PIBLIB Library Location
+PIDLIB_DIR = /home/eced3901/sketchbook/libraries/PID/
 
 # Arduino Library Information
 ARDUINO_DIR = /usr/share/arduino/
@@ -41,6 +43,8 @@ ARDLIB_DIR := $(ARDUINO_DIR)hardware/arduino/cores/arduino
 ARD_SRCS := $(shell find $(ARDLIB_DIR) -name *.cpp -or -name *.c)
 # Add ROSLIB Sources
 ARD_SRCS += $(shell find $(ROSLIB_DIR) -name *.cpp -or -name *.c)
+# Add PIDLIB Sources
+ARD_SRCS += $(shell find $(PIDLIB_DIR) -name *.cpp -or -name *.c)
 
 # Find all the C and C++ files we want to compile
 SRCS += $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c)
@@ -65,6 +69,8 @@ INC_FLAGS += -I$(ARDUINO_DIR)hardware/arduino/cores/arduino
 INC_FLAGS += -I$(ARDUINO_DIR)hardware/arduino/variants/eightanaloginputs
 # Add ROSLIB_DIR to INC_FLAGS
 INC_FLAGS += -I$(ROSLIB_DIR)
+# Add PIDLIB_DIR to INC_FLAGS
+INC_FLAGS += -I$(PIDLIB_DIR)
 
 # Object Copy
 EXEC_DIR = $(BUILD_DIR)/$(TARGET_EXEC)

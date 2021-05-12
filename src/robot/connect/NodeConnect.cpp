@@ -16,8 +16,8 @@ float rightSetPoint;
 
 void subscriberCallback(const geometry_msgs::Twist& msg)
 {
-	leftSetPoint = ((msg.linear.x / wheel_radius) + ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi;
-	rightSetPoint = ((msg.linear.x / wheel_radius) - ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi;
+	leftSetPoint = (float)(((msg.linear.x / wheel_radius) + ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi);
+	rightSetPoint = (float)(((msg.linear.x / wheel_radius) - ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi);
 };
 ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &subscriberCallback);
 
@@ -39,12 +39,14 @@ void NodeConnect::init()
 
 void NodeConnect::update()
 {
+	// Covnert RPM to TICK
+	constexpr float tick_to_rpm = 1.9073486328125;
 	// Update left values.
 	m_leftPair.setpoint = leftSetPoint;
-	m_leftMsg.data = (int32_t)m_leftPair.measurement;
+	m_leftMsg.data = (int32_t)(m_leftPair.measurement / tick_to_rpm);
 	// Update right values.
 	m_rightPair.setpoint = rightSetPoint;
-	m_rightMsg.data = (int32_t)m_rightPair.measurement;
+	m_rightMsg.data = (int32_t)(m_rightPair.measurement / tick_to_rpm);
 	// Update publishers
 	m_leftTicks.publish(&m_leftMsg);
 	m_rightTicks.publish(&m_rightMsg);
