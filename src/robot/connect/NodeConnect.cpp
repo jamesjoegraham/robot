@@ -16,8 +16,8 @@ float rightSetPoint;
 
 void subscriberCallback(const geometry_msgs::Twist& msg)
 {
-	leftSetPoint = (float)(((msg.linear.x / wheel_radius) + ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi);
-	rightSetPoint = (float)(((msg.linear.x / wheel_radius) - ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi);
+	leftSetPoint = (float)(((msg.linear.x / wheel_radius) - ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi);
+	rightSetPoint = (float)(((msg.linear.x / wheel_radius) + ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi);
 };
 ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &subscriberCallback);
 
