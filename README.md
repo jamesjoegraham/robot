@@ -11,10 +11,6 @@ Note: You should already have the avr-gcc toolchain as it were preinstalled on t
 	mkdir ~/sketchbook/libraries
 	scp -r ubuntu@10.0.39.39:~/sketchbook/libraries/ros_lib ~/sketchbook/libraries/
 	```
- - Import ROS C++ library into Arduino IDE:
-	
-	Import into Arduino libraries
-	Open Arduino IDE->Sketch->Import Library->Select ~/sketchbook/libraries/ros_lib
 	
  - Setup SSH Keys (optional)
 	
