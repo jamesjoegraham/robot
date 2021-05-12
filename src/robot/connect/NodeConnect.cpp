@@ -2,6 +2,8 @@
 
 #include "NodeConnect.h"
 
+#include <geometry_msgs/Twist.h>
+
 using namespace robot::connect;
 
 // Calculation Constants
@@ -10,17 +12,15 @@ constexpr float wheel_axis = 0.200; // (m).
 constexpr float tick_to_rpm = 1.9073486328125;
 constexpr float pi = 3.14159265359;
 
-static float leftSetPoint;
-static float rightSetPoint;
+float leftSetPoint;
+float rightSetPoint;
 
 void subscriberCallback(const geometry_msgs::Twist& msg)
 {
 	leftSetPoint = ((msg.linear.x / wheel_radius) + ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi;
 	rightSetPoint = ((msg.linear.x / wheel_radius) - ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi;
 };
-static ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &subscriberCallback);
-
-// Static ROS Subscriber Values
+ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &subscriberCallback);
 
 NodeConnect::NodeConnect(SpeedPair& leftPair, SpeedPair& rightPair)
     :
@@ -28,6 +28,9 @@ NodeConnect::NodeConnect(SpeedPair& leftPair, SpeedPair& rightPair)
     m_rightPair(rightPair),
     m_leftTicks("lwheel", &m_leftMsg),
     m_rightTicks("rwheel", &m_rightMsg)
+{}
+
+void NodeConnect::init()
 {
 	m_nodeHandle.initNode();
 	m_nodeHandle.subscribe(sub);

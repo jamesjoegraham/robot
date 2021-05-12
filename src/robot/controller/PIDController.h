@@ -3,7 +3,7 @@
 #ifndef PIDController_HEADER
 #define PIDController_HEADER
 
-#include "SpeedPair.h"
+#include <robot/SpeedPair.h>
 
 namespace robot { namespace controller
 {
@@ -44,8 +44,7 @@ namespace robot { namespace controller
 		// Execute the calculations.
 		void Compute();
 
-		// Output getter. This returns by const reference to make it read only. There's no good
-		// reason to modify this value.
+		// Output getter. This returns by const reference to make it read only.
 		float getOutput() const
 		{
 			return m_output;
@@ -90,7 +89,7 @@ namespace robot { namespace controller
 		// zero-copying use throughout the program.
 		SpeedPair& m_speedPair;
 
-		// PIDController's output. This is a smart pointer to with a memory location
+		// PIDController's output.
 		float m_output;
 
 	};

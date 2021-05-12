@@ -6,6 +6,7 @@ using namespace robot::controller;
 
 namespace
 {
+	// Helper function that clamps down value to a min and max.
 	void clamp(float& value, const float low, const float high)
 	{
 		if (value < low)
@@ -96,7 +97,7 @@ void PIDController::Compute()
 	// This calculation also includes a low pass filter. These high frequencies may cause a high pitch to play in the motors.
 	//
 	m_differentiator =
-		(2.0f * m_Kd * (measurement - m_prevMeasurement))
+		(2.0f * -m_Kd * (measurement - m_prevMeasurement))
 		+ ((2.0f * m_tau - m_dt) * m_differentiator)
 		/ (2.0f * m_tau + m_dt);
 	// Add it to the total.

@@ -1,43 +1,36 @@
 # Team 8 Robot Arduino Code
 
-##Installation Procedure
+## Installation Procedure
 
-You should already have avr-gcc and avrdude as they were preinstalled on the VM.
+Note: You should already have avr-gcc (toolchain) as it were preinstalled on the VM. Avrdude is also already on the Pi.
 
- - Update APT package list:
-
-	sudo apt-get update
-
- - Install pySerial:
-
-	sudo apt-get install python3-serial
-
- - Install arduino-mk:
+ - Download ROS C++ library from Pi:
 	
-	sudo apt-get install arduino-mk
-
- - Install ros library:
-	
-	Download from PI
 	mkdir ~/sketchbook/libraries
 	scp -r ubuntu@10.0.39.39:~/sketchbook/libraries/ros_lib ~/sketchbook/libraries/
+	
+ - Import ROS C++ library into Arduino IDE:
+
+	Import into Arduino libraries
 	Open Arduino IDE->Sketch->Import Library->Select ~/sketchbook/libraries/ros_lib
 
- - Setup SSH Keys
+ - Setup SSH Keys (optional)
 
+	SSH Keys are optional but they will prevent you from needing to enter the Pi's password a lot.
 	
-##Build Procedure
-
- - Navigate to the build directory
-
-	cd build
+## Build Procedure
 
  - Run make to build:
 
 	make
 
- - Run make upload to upload to Raspberry PI -> Arduino
+ - Clean up object/executable files (don't do this before upload):
 
-	make upload
+	make clean
 
+## Upload Procedure
+
+ - Run the upload script:
+
+	tools/upload.sh
 

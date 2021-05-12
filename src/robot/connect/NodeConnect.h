@@ -1,9 +1,8 @@
 #ifndef NodeConnect_HEADER
 #define NodeConnect_HEADER
 
-#include "SpeedPair.h"
+#include <robot/SpeedPair.h>
 
-#include <geometry_msgs/Twist.h>
 #include <ros.h>
 #include <std_msgs/Int32.h>
 
@@ -16,6 +15,9 @@ namespace robot { namespace connect
 
 		// Constructor. We specify where we want our value set point values to go here.
 		NodeConnect(SpeedPair& leftPair, SpeedPair& rightPair);
+
+		// Initialize node.
+		void init();
 
 		// Update set points and measurements.
 		void update();
