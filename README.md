@@ -1,6 +1,6 @@
 # Team 8 Robot Arduino Code
 
-This is Team 8's arduino code, featuring a custom avr-gcc Makefile and external uploading functionalities.
+This is Team 8's Arduino code, featuring a custom avr-gcc Makefile and external uploading functionalities.
 
 ## Installation Procedure
 
