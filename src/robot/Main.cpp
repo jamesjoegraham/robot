@@ -87,8 +87,8 @@ connect::NodeConnect nodeHandle{leftPair, rightPair};
 // Entry point.
 void setup()
 {
-	// Initialize only once.
-	leftMotor.init();
+	// Initialize motor functions.
+	motor::Motor::init();
 	
 	// DEBUG Mode for manual Serial Monitor output.
 	if (DEBUG) { Serial.begin(9600); }

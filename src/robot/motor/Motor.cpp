@@ -21,9 +21,12 @@ volatile int32_t left_ticks = 0;
 volatile unsigned int past_PINB = 0x00;
 ISR(PCINT0_vect)
 {
+	// Did PINB0 just turn on? (past_PINB0 is 0, PINB0 is 1)
 	if ((PINB & (1 << PB0)) && !(past_PINB & (1 << PB0))) // trigger on rising-edge only
 	{
+		// If PINB1 is on, decrement.
 		if (PINB & (1 << PB1)) { right_temp_ticks--; right_ticks--; }  // reverse
+		// Else increment.
 		else { right_temp_ticks++; right_ticks++; }                // forward
 	}
 	past_PINB = PINB;
@@ -33,9 +36,12 @@ ISR(PCINT0_vect)
 volatile unsigned int past_PIND = 0x00;
 ISR(PCINT2_vect)
 {
+	// Did PIND0 just turn on? (past_PIND is 0, PIND0 is 1)
 	if ((PIND & (1 << PD5)) && !(past_PIND & (1 << PD5))) // trigger on rising-edge only
 	{
+		// If PIND6 is on, decrement.
 		if (PIND & (1 << PD6)) { left_temp_ticks--; left_ticks--; }  // reverse
+		// Else increment.
 		else { left_temp_ticks++; left_ticks++; }                // forward
 	}
 	past_PIND = PIND;
@@ -48,6 +54,7 @@ volatile float omega_right_measured;
 // Measurement ISR
 ISR(TIMER1_OVF_vect)
 {
+	// Constant used to convert from ticks to wheel RPM.
 	constexpr float tick_to_rpm = 1.9073486328125;
 	// Calculate the RPM from the ticks over a fixed time window
 	// 16 MHz crystal / 8 = 2 MHz / 65536 counts = 30.52 Hz update rate
@@ -70,11 +77,25 @@ void Motor::init()
 	DDRB &= ~((1 << PB0) | (1 << PB1)); // PB0 = Input, Right Encoder A ch.  PB1 = Input, Right Encoder B ch.
 	DDRD &= ~((1 << PD5) | (1 << PD6)); // PD5 = Input, Left Encoder A ch.  PD6 = Input, Left Encoder B ch.
 
+	// This is the actual timer register that counts. It is set at 0.
+	TCNT2 = 0; // Timer2 start at zero.
 	// Set the timer registers to PWM as desired.
-	TCNT2 = 0x00; // Timer2 start at zero.
-	TCCR2A = 0x03; // Timer2 Control Register A.
-	TCCR2B = 0x02; // Timer2 Control Register B.
+	// Enable WGM21 and WGM20 (while WGM22 still off) for Fast PWM Mode.
+	//
+	// Fast PWM Mode starts the timer at 0 with the output turned on.
+	// When the timers reasch the value  of compre register OCR2A/ORR2B
+	// it turns off the output.
+	//
+	// Ex: OCR2A = 0 means 0% duty cycle.
+	// Ex: OCR2A = 255 means 100% duty cycle.
+	// Ex: OCR2A = 127 means 50% duty cycle.
+	//
+	TCCR2A = (1 << WGM21) | (1 << WGM20); // Timer2 Control Register A.
+	// Clock mode (prescaling). It is currently set to clk/1. (16Mhz CPU).
+	// It was previously set to CS21 (clk/8).
+	TCCR2B = (1 << CS20); // Timer2 Control Register B.
 
+	// These registers are the PWM level.
 	OCR2A = 0; // Timer2 Output Compare Register A, 8-bit.
 	OCR2B = 0; // Timer2 Output Compare Register B, 8-bit.
 
@@ -83,9 +104,9 @@ void Motor::init()
 	PORTD &= ~((1 << PD3) | (1 << PD4));
 
 	// Set Timer 1 to monitor Encoders, interupt service routine uses
-	TCNT1 = 0x00; // Timer1 start at zero
-	TCCR1A = 0x00; // Timer1 Control Register A, normal mode.                                           
-	TCCR1B = 0x02; // Timer1 Control Register B.
+	TCNT1 = 0; // Timer1 start at zero
+	TCCR1A = 0; // Timer1 Control Register A, enable normal mode.                                           
+	TCCR1B = (1 << CS11); // Timer1 Control Register B.
 
 	// Set Masks for Pin Change Interrupts.
 	cli(); // Disable interrupts while changing registers.
