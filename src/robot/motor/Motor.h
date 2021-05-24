@@ -31,6 +31,8 @@ namespace robot { namespace motor
 		// Retrieve the speed measurement. Returns the measurement value.
 		float retrieveMeasurement() const;
 
+		int32_t getTicks() const;
+
 
 	private:
 		// Helper functions

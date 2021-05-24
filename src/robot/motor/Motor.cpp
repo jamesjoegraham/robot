@@ -25,9 +25,11 @@ ISR(PCINT0_vect)
 	if ((PINB & (1 << PB0)) && !(past_PINB & (1 << PB0))) // trigger on rising-edge only
 	{
 		// If PINB1 is on, decrement.
-		if (PINB & (1 << PB1)) { right_temp_ticks--; right_ticks--; }  // reverse
+		if (PINB & (1 << PB1))
+		{ right_temp_ticks--; right_ticks--; }  // reverse
 		// Else increment.
-		else { right_temp_ticks++; right_ticks++; }                // forward
+		else
+		{ right_temp_ticks++; right_ticks++; } // forward
 	}
 	past_PINB = PINB;
 }
@@ -40,9 +42,11 @@ ISR(PCINT2_vect)
 	if ((PIND & (1 << PD5)) && !(past_PIND & (1 << PD5))) // trigger on rising-edge only
 	{
 		// If PIND6 is on, decrement.
-		if (PIND & (1 << PD6)) { left_temp_ticks--; left_ticks--; }  // reverse
+		if (PIND & (1 << PD6))
+		{ left_temp_ticks--; left_ticks--; }  // reverse
 		// Else increment.
-		else { left_temp_ticks++; left_ticks++; }                // forward
+		else
+		{ left_temp_ticks++; left_ticks++; } // forward
 	}
 	past_PIND = PIND;
 }
@@ -125,16 +129,28 @@ float Motor::retrieveMeasurement() const
 	// Return the static ISR result float.
 	if (m_motorType == MotorType::left)
 	{
+
 		return omega_left_measured;
 	}
 	return omega_right_measured;
+}
+
+int32_t Motor::getTicks() const
+{
+	// Return either left_ticks or right_ticks.
+	if (m_motorType == MotorType::left)
+	{
+
+		return left_ticks;
+	}
+	return right_ticks;
 }
 
 // Set the PWM of the motor.
 void Motor::setPWM(int pwm)
 {
 	// Boolean that tells us if the motor is going forwards or not.
-	const bool forwards{pwm > 0};
+	const bool forwards{pwm >= 0};
 	// Find its absolute value.
 	pwm = (pwm < 0) ? (-1 * pwm) : (pwm);
 	// Clamp down the pwm to a max of 255.

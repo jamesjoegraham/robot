@@ -19,8 +19,14 @@ namespace robot { namespace connect
 		// Initialize node.
 		void init();
 
+		// Refresh publisher readings.
+		void refresh(int32_t leftTicks, int32_t rightTicks);
+
 		// Update set points and measurements.
 		void update();
+
+		ros::NodeHandle& getHandle()
+		{ return m_nodeHandle; }
 
 	private:
 
@@ -31,6 +37,7 @@ namespace robot { namespace connect
 		SpeedPair& m_leftPair;
 		SpeedPair& m_rightPair;
 		
+	public:
 		std_msgs::Int32 m_leftMsg;
 		std_msgs::Int32 m_rightMsg;
 

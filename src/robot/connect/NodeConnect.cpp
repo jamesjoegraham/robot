@@ -37,19 +37,22 @@ void NodeConnect::init()
 	m_nodeHandle.advertise(m_rightTicks);
 }
 
-void NodeConnect::update()
+void NodeConnect::refresh(int32_t leftTicks, int32_t rightTicks)
 {
 	// Covnert Measured RPM values back to TICK
 	constexpr float tick_to_rpm = 1.9073486328125;
 	// Update left values.
 	m_leftPair.setpoint = leftSetPoint;
-	m_leftMsg.data = (int32_t)(m_leftPair.measurement / tick_to_rpm);
+	// Set the ticks.
+	m_leftMsg.data = leftTicks;
 	// Update right values.
 	m_rightPair.setpoint = rightSetPoint;
-	m_rightMsg.data = (int32_t)(m_rightPair.measurement / tick_to_rpm);
-	// Update publishers
-	m_leftTicks.publish(&m_leftMsg);
-	m_rightTicks.publish(&m_rightMsg);
+	// Set the ticks.
+	m_rightMsg.data = rightTicks;
+}
+
+void NodeConnect::update()
+{
 	// Update node handle
 	m_nodeHandle.spinOnce();
 }

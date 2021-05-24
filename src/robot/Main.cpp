@@ -89,10 +89,9 @@ void setup()
 {
 	// Initialize motor functions.
 	motor::Motor::init();
-	
-	// DEBUG Mode for manual Serial Monitor output.
-	if (DEBUG) { Serial.begin(9600); }
-	else { nodeHandle.init(); }
+
+	// Initialize ROS connection.
+	nodeHandle.init();
 
 	rightPID.SetMode(AUTOMATIC);
 	rightPID.SetSampleTime(100); // 100ms
@@ -116,6 +115,17 @@ void loop()
 	omega_right_setpoint = (double)rightPair.setpoint;
 	omega_right_setpoint_abs = abs(omega_right_setpoint);
 
+	// Set the SpeedPairs
+	leftPair.measurement = (float)omega_left_measured1;
+	rightPair.measurement = (float)omega_right_measured1;
+
+	// Refresh the publisher readings.
+	nodeHandle.refresh(
+		// Multiply left ticks by -1 to fix weird bug.
+		// TODO: Figure out why leftMotor's ticks are wrong.
+		leftMotor.getTicks() * -1,
+		rightMotor.getTicks());
+
 	// Compute PID Values.
 	const bool leftComputed = leftPID.Compute();
 	const bool rightComputed = rightPID.Compute();
@@ -124,31 +134,22 @@ void loop()
 	{
 		//leftMotor.setPWM(static_cast<int>(leftPID.getOutput() * (leftPair.setpoint < 0) ? -1 : 1));
 		leftMotor.setPWM((int)left_pwm * ((omega_left_setpoint < 0) ? -1 : 1));
+		// Update publisher
+		// TODO: make neater
+		nodeHandle.m_leftTicks.publish(&nodeHandle.m_leftMsg);
+	
 	}
 	if (rightComputed)
 	{
 		//rightMotor.setPWM(static_cast<int>(rightPID.getOutput() * (rightPair.setpoint < 0) ? -1 : 1));
 		rightMotor.setPWM((int)right_pwm * ((omega_right_setpoint < 0) ? -1 : 1));
+		// Update publisher.
+		// TODO: Make neater
+		nodeHandle.m_rightTicks.publish(&nodeHandle.m_rightMsg);
 	}
 
-	// DEBUG Info
-	if (DEBUG)
-	{
-		Serial.print("Left Motor: S = ");
-		Serial.print(leftPair.setpoint);
-		Serial.print(" M = ");
-		Serial.print(leftPair.measurement);
-		Serial.print("Right Motor: S = ");
-		Serial.print(rightPair.setpoint);
-		Serial.print(" M = ");
-		Serial.print(rightPair.measurement);
-		Serial.print("\n");
-	}
-	else
-	{
-		// Update Node. This includes publishing.
-		nodeHandle.update();
-	}
+	// Spin the node handle.
+	nodeHandle.update();
 
 	// Wait 1ms.
 	delay(1);
