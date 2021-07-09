@@ -44,6 +44,9 @@ robot::controller::PIDController rightPID{
 	rightPair		// Current set point and measured value
 };*/
 
+// Counter for the fire LED
+int fireLEDCounter = 0;
+
 double omega_right_measured1 = 0.0f;
 double omega_right_measured_abs = 0.0f;
 
@@ -151,8 +154,20 @@ void loop()
 	// Set the Fire LED's state.
 	if(nodeHandle.getFireLED())
 	{
-		// Turn on the built-in LED.
-		PORTB |= (1 << PORTB5);
+		fireLEDCounter++;
+
+		// Turn on/off every 50ms.
+		if((fireLEDCounter / 50) % 2)
+		{
+			// Turn on the built-in LED.
+			PORTB |= (1 << PORTB5);
+		}
+		else
+		{
+			// Turn off the built-in LED.
+			PORTB &= ~(1 << PORTB5);
+		}
+		
 	}
 	else
 	{
