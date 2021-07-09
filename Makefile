@@ -28,9 +28,9 @@ OBJCP = $(AVR_DIR)/avr-objcopy
 AVRSZ = $(AVR_DIR)/avr-size
 
 # ROSLIB Library Location
-ROSLIB_DIR = /home/eced3901/sketchbook/libraries/ros_lib/
+ROSLIB_DIR = lib/ros_lib/
 # PIBLIB Library Location
-PIDLIB_DIR = /home/eced3901/sketchbook/libraries/PID/
+PIDLIB_DIR = lib/PID/
 
 # Arduino Library Information
 ARDUINO_DIR = /usr/share/arduino/
