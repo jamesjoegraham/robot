@@ -3,6 +3,7 @@
 #include "NodeConnect.h"
 
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Bool.h>
 
 using namespace robot::connect;
 
@@ -14,12 +15,19 @@ constexpr float pi = 3.14159265359;
 float leftSetPoint;
 float rightSetPoint;
 
-void subscriberCallback(const geometry_msgs::Twist& msg)
+void subscriberCallbackVel(const geometry_msgs::Twist& msg)
 {
 	leftSetPoint = (float)(((msg.linear.x / wheel_radius) - ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi);
 	rightSetPoint = (float)(((msg.linear.x / wheel_radius) + ((msg.angular.z * wheel_axis) / (2 * wheel_radius))) * 30 / pi);
 };
-ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &subscriberCallback);
+ros::Subscriber<geometry_msgs::Twist> velSub("cmd_vel", &subscriberCallbackVel);
+
+bool fireLED = false;
+void subscriberCallbackLED(const std_msgs::Bool& msg)
+{
+	fireLED = msg.data;
+}
+ros::Subscriber<std_msgs::Bool> LEDSub("fireLED", &subscriberCallbackLED);
 
 NodeConnect::NodeConnect(SpeedPair& leftPair, SpeedPair& rightPair)
     :
@@ -32,7 +40,8 @@ NodeConnect::NodeConnect(SpeedPair& leftPair, SpeedPair& rightPair)
 void NodeConnect::init()
 {
 	m_nodeHandle.initNode();
-	m_nodeHandle.subscribe(sub);
+	m_nodeHandle.subscribe(velSub);
+	m_nodeHandle.subscribe(LEDSub);
 	m_nodeHandle.advertise(m_leftTicks);
 	m_nodeHandle.advertise(m_rightTicks);
 }
@@ -49,6 +58,11 @@ void NodeConnect::refresh(int32_t leftTicks, int32_t rightTicks)
 	m_rightPair.setpoint = rightSetPoint;
 	// Set the ticks.
 	m_rightMsg.data = rightTicks;
+}
+
+bool NodeConnect::getFireLED()
+{
+	return fireLED;
 }
 
 void NodeConnect::update()

@@ -25,6 +25,9 @@ namespace robot { namespace connect
 		// Update set points and measurements.
 		void update();
 
+		// Return the Fire LED's current state.
+		bool getFireLED();
+
 		ros::NodeHandle& getHandle()
 		{ return m_nodeHandle; }
 

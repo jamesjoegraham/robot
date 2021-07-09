@@ -148,6 +148,18 @@ void loop()
 		nodeHandle.m_rightTicks.publish(&nodeHandle.m_rightMsg);
 	}
 
+	// Set the Fire LED's state.
+	if(nodeHandle.getFireLED())
+	{
+		// Turn on the built-in LED.
+		PORTB |= (1 << PORTB5);
+	}
+	else
+	{
+		// Turn off the built-in LED.
+		PORTB &= ~(1 << PORTB5);
+	}
+
 	// Spin the node handle.
 	nodeHandle.update();
 
