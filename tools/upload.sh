@@ -7,7 +7,7 @@ username=ubuntu			# Username of the Pi
 remote_ip=10.0.39.39		# IP Address of the Pi
 remote_path=robot.hex		# Where to put the .hex file on the Pi
 hex_path=build/robot.hex	# Where the .hex file is relative to execution location
-usb_port=ttyUSB0
+usb_port=ttyUSB1
 
 # Upload the file to the Pi
 scp $hex_path $username@$remote_ip:$remote_path
