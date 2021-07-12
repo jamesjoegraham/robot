@@ -100,6 +100,9 @@ void setup()
 	rightPID.SetSampleTime(100); // 100ms
 	leftPID.SetMode(AUTOMATIC);
 	leftPID.SetSampleTime(100); // 100ms
+
+	// Init Fire LED.
+	DDRB |= (1 << PORTB5);
 }
 
 // Continuous loop.
@@ -122,11 +125,9 @@ void loop()
 	leftPair.measurement = (float)omega_left_measured1;
 	rightPair.measurement = (float)omega_right_measured1;
 
-	// Refresh the publisher readings.
+	// Refresh the publisher readings with the current tick values.
 	nodeHandle.refresh(
-		// Multiply left ticks by -1 to fix weird bug.
-		// TODO: Figure out why leftMotor's ticks are wrong.
-		leftMotor.getTicks() * -1,
+		leftMotor.getTicks(),
 		rightMotor.getTicks());
 
 	// Compute PID Values.
