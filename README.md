@@ -6,11 +6,10 @@ This is Team 8's Arduino code, featuring a custom avr-gcc Makefile and external 
 
 Note: You should already have the avr-gcc toolchain as it is preinstalled on the VM. Avrdude is also already on the Pi.
 
- - Download C++ libraries from Pi:
-	```
-	mkdir -p ~/sketchbook/
-	scp -r ubuntu@10.0.39.39:~/sketchbook/libraries/ ~/sketchbook/
-	```
+ - Clone this repo
+ 	```
+	git clone http://github.com/jamesjoegraham/robot.git
+	 ```
 	
  - Setup SSH Keys (optional)
 	```
@@ -35,4 +34,10 @@ Note: You should already have the avr-gcc toolchain as it is preinstalled on the
  - Run the upload script:
 	```
 	tools/upload.sh
+	```
+
+ - If the upload script fails to upload to the Arduino, try changing the usb_port variable in the script:
+ 	```
+	nano tools/upload.sh
+	usb_port=ttyUSB[0,1]
 	```
